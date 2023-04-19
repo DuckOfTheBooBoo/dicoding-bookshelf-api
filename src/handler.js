@@ -37,10 +37,21 @@ const addBookHandler = (request, h) => {
   return response;
 };
 
-const getAllBooksHandler = () => ({
-  status: 'success',
-  data: {
-    books,
-  },
-});
+// Mengembalikan semua buku yang ada dalam array books
+const getAllBooksHandler = (_, h) => {
+  const getBooks = books.map((book) => ({
+    id: book.id,
+    name: book.name,
+    publisher: book.publisher,
+  }));
+
+  const response = h.response({
+    status: 'success',
+    data: {
+      getBooks,
+    },
+  });
+  response.code(200);
+  return response;
+};
 module.exports = { addBookHandler, getAllBooksHandler };
