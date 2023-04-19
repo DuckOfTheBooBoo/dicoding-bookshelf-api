@@ -1,4 +1,10 @@
-const { addBookHandler, getAllBooksHandler, getBookByIdHandler } = require('./handler');
+const {
+  addBookHandler,
+  getAllBooksHandler,
+  getBookByIdHandler,
+  updateBookById,
+  deleteBookById,
+} = require('./handler');
 
 /**
  * List of Hapi.server.routes
@@ -18,6 +24,16 @@ const routes = [
     method: 'POST',
     path: '/books',
     handler: addBookHandler,
+  },
+  {
+    method: 'PUT',
+    path: '/books/{id}',
+    handler: updateBookById,
+  },
+  {
+    method: 'DELETE',
+    path: '/books/{id}',
+    handler: deleteBookById,
   },
 ];
 
