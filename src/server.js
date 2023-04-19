@@ -1,1 +1,1 @@
-console.log("halo");
+const Hapi = require('@hapi/hapi');
