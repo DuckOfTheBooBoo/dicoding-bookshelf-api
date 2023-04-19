@@ -1,4 +1,4 @@
-const { addBookHandler, getAllBooksHandler } = require("./handler");
+const { addBookHandler, getAllBooksHandler } = require('./handler');
 
 /**
  * List of Hapi.server.routes
