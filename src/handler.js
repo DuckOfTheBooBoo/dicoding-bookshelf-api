@@ -3,12 +3,12 @@ const { Book, books } = require('./books');
 // Menambahkan book baru berdasarkan body yang diberikan oleh request
 const addBookHandler = (request, h) => {
   const {
-    name = undefined,
-    year = undefined,
-    author = undefined,
-    summary = undefined,
-    publisher = undefined,
-    pageCount = undefined,
+    name = '',
+    year = 0,
+    author = '',
+    summary = '',
+    publisher = '',
+    pageCount = 0,
     readPage = 0,
     reading = false,
   } = request.payload;
@@ -52,7 +52,7 @@ const addBookHandler = (request, h) => {
 
   const response = h.response({
     status: 'fail',
-    message: 'Catatan gagal ditambahkan',
+    message: 'Buku gagal ditambahkan',
   });
   response.code(500);
   return response;
@@ -75,4 +75,25 @@ const getAllBooksHandler = (_, h) => {
   response.code(200);
   return response;
 };
-module.exports = { addBookHandler, getAllBooksHandler };
+
+const getBookByIdHandler = (request, h) => {
+  const { id } = request.params;
+  const book = books.filter((tBook) => tBook.id === id)[0];
+
+  if (book !== undefined) {
+    return {
+      status: 'success',
+      data: {
+        book,
+      },
+    };
+  }
+
+  const response = h.response({
+    status: 'fail',
+    message: 'Buku tidak ditemukan',
+  });
+  response.code(404);
+  return response;
+};
+module.exports = { addBookHandler, getAllBooksHandler, getBookByIdHandler };
