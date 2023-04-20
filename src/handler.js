@@ -196,7 +196,16 @@ const getBookByIdHandler = (request, h) => {
 // Mengubah isi data buku
 const updateBookById = (request, h) => {
   const { id } = request.params;
-  const { name, year, author, summary, publisher, pageCount, readPage, reading } = request.payload;
+  const {
+    name,
+    year,
+    author,
+    summary,
+    publisher,
+    pageCount,
+    readPage,
+    reading,
+  } = request.payload;
 
   const bookIndex = books.findIndex((book) => book.id === id);
 
