@@ -161,16 +161,10 @@ const getAllBooksHandler = (request, h) => {
     }
   }
 
-  const getBooks = books.map((book) => ({
-    id: book.id,
-    name: book.name,
-    publisher: book.publisher,
-  }));
-
   response = h.response({
     status: 'success',
     data: {
-      books: getBooks,
+      books: bookFilter(books),
     },
   });
   response.code(200);
