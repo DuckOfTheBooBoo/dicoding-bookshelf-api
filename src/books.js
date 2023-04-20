@@ -33,6 +33,7 @@ class Book {
   }
 }
 
+// eslint-disable-next-line prefer-const
 let books = [];
 
 module.exports = { Book, books };
