@@ -1,4 +1,5 @@
 const { Book, books } = require('./books');
+const { objectHasItems, bookFilter } = require('./misc');
 
 // Menambahkan book baru berdasarkan body yang diberikan oleh request
 const addBookHandler = (request, h) => {
@@ -28,7 +29,7 @@ const addBookHandler = (request, h) => {
   if (readPage > pageCount) {
     const response = h.response({
       status: 'fail',
-      message: 'Gagal menambahkan buku. Mohon isi nama buku',
+      message: 'Gagal menambahkan buku. readPage tidak boleh lebih besar dari pageCount',
     });
     response.code(400);
     return response;
@@ -59,17 +60,117 @@ const addBookHandler = (request, h) => {
 };
 
 // Mengembalikan semua buku yang ada dalam array books
-const getAllBooksHandler = (_, h) => {
+const getAllBooksHandler = (request, h) => {
+
+  // response placeholder
+  let response;
+
+  // Try to get query parameters
+  const queryParams = request.query;
+
+  if (objectHasItems(queryParams)) {
+    const {
+      name = '',
+      reading = undefined,
+      finished = undefined,
+    } = queryParams;
+
+    // GET all book containing specific name
+    if (name) {
+      const nameLower = name.toLowerCase();
+      const booksWithSpecifiNames = books.filter(
+        (book) => book.name.toLowerCase().includes(nameLower),
+      );
+
+      if (booksWithSpecifiNames.length > 0) {
+        response = h.response({
+          status: 'success',
+          data: {
+            book: bookFilter(booksWithSpecifiNames),
+          },
+        });
+        response.code(200);
+        return response;
+      }
+      response = h.response({
+        status: 'success',
+        data: {
+          book: [],
+        },
+      });
+      response.code(200);
+      return response;
+    }
+
+    // GET specific books with reading query params
+    if (reading !== undefined) {
+      if (reading === 1) {
+        const booksCurrentlyRead = books.filter((book) => book.reading === true);
+
+        if (objectHasItems(booksCurrentlyRead)) {
+          response = h.response({
+            status: 'success',
+            data: {
+              book: bookFilter(booksCurrentlyRead),
+            },
+          });
+          return response;
+        }
+      } else if (reading === 0) {
+        const booksCurrentlyUnread = books.filter((book) => book.reading === false);
+
+        if (objectHasItems(booksCurrentlyUnread)) {
+          response = h.response({
+            status: 'success',
+            data: {
+              book: bookFilter(booksCurrentlyUnread),
+            },
+          });
+          return response;
+        }
+      }
+    }
+
+    if (finished !== undefined) {
+      if (finished === 1) {
+        const finishedBooks = books.filter((book) => book.finished === true);
+
+        if (objectHasItems(finishedBooks)) {
+          response = h.response({
+            status: 'success',
+            data: {
+              book: bookFilter(finishedBooks),
+            },
+          });
+          return response;
+        }
+
+      } else if (finished === 0) {
+        const unfinishedBooks = books.filter((book) => book.finished === false);
+
+        if (objectHasItems(unfinishedBooks)) {
+          response = h.response({
+            status: 'success',
+            data: {
+              book: bookFilter(unfinishedBooks),
+            },
+          });
+          return response;
+        }
+      }
+    }
+  }
+
   const getBooks = books.map((book) => ({
     id: book.id,
     name: book.name,
     publisher: book.publisher,
   }));
 
-  const response = h.response({
+  response = h.response({
     status: 'success',
     data: {
-      getBooks,
+      books: getBooks,
     },
   });
   response.code(200);
